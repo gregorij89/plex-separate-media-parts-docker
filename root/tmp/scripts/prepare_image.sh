@@ -4,7 +4,7 @@ apt update
 apt upgrade -y
 
 # Install necessary tools
-apt install --no-install-recommends -y python3, xz-utils
+apt install --no-install-recommends -y python3 xz-utils
 
 # Install ffmpeg
 if [[ -z $PLEX_ARCH ]]; then

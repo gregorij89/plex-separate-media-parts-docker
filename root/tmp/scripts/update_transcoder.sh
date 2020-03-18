@@ -8,6 +8,6 @@ PT='/usr/lib/plexmediaserver/Plex Transcoder'
 PCAT='/usr/lib/plexmediaserver/Plex Separate Parts Transcoder'
 
 if [[ -f "$PT" ]] && [[ ! -h "$PT" ]]; then
-    mv -v "$PT" "${PT}_org" \
+    mv -v "$PT" "${PT}_org"
     ln -sv "$PCAT" "$PT"
 fi
