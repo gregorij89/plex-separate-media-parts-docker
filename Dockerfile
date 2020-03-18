@@ -1,4 +1,4 @@
-FROM plexinc/pms-docker:latest
+FROM plexinc/pms-docker:latest AS final
 
 COPY root/ /
 RUN \
