@@ -1,10 +1,11 @@
 #!/bin/bash -xe
 # Update image
-apt update
-apt upgrade -y
+apt clean
+apt-get update
+apt-get upgrade -y --allow-unauthenticated
 
 # Install necessary tools
-apt install --no-install-recommends -y python3 xz-utils
+apt-get install --no-install-recommends --allow-unauthenticated -y python3 xz-utils wget
 
 # Install ffmpeg
 if [[ -z $PLEX_ARCH ]]; then
@@ -18,6 +19,7 @@ fi
 wget "https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-${ARCH}-static.tar.xz" -O ffmpeg.tar.xz
 tar xvf ffmpeg.tar.xz
 mv -v ffmpeg-*/ffprobe /usr/local/bin/
+mv -v ffmpeg-*/ffmpeg /usr/local/bin/
 rm -rfv ffmpeg.tar.xz ffmpeg-*
 apt remove --purge -y xz-utils
 
