@@ -1,9 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
 # Parameters:
 # 1: Docker hub URL
 # 2: Docker hub login name
 # 3: Docker hub password
+# 4: Image name
+# 5: Tag version
 
 function getVersionInfo {
   local version="$1"
@@ -35,16 +37,23 @@ function getVersionInfo {
   __funcRemoteVersion=$(echo "${versionInfo}" | sed -n 's/.*Release.*version="\([^"]*\)".*/\1/p')
   __funcRemoteFile=$(echo "${versionInfo}" | sed -n 's/.*file="\([^"]*\)".*/\1/p')
 }
-
-STOREDVERSION=""
-FILE="/build/publishedVersion.txt"
-
-read -d $'\x04' STOREDVERSION < "$FILE"
+       
+tokenUri="https://$1/service/token"
+data=("service=harbor-registry" "scope=repository:$4:pull")
+token="$(curl --silent -k --get -u $2:$3 --data-urlencode ${data[0]} --data-urlencode ${data[1]} $tokenUri | jq --raw-output '.token')"
+listUri="https://$1/v2/$4/tags/list"
+authz="Authorization: Bearer $token"
+result="$(curl -k --silent --get -H "Accept: application/json" -H "Authorization: Bearer $token" $listUri | jq --raw-output '.tags[]')"
 
 getVersionInfo "public" "" remoteVersion remoteFile
+checkVersion="$remoteVersion-$5"
 
-if [ "$STOREDVERSION" != "$remoteVersion" ]; then
-	./docker.sh $1 $2 $3 'latest' $remoteVersion
-    rm "$FILE"
-	echo "${remoteVersion}" >> "$FILE"
-fi
+for tag in ${result[*]}
+do
+    if [ "$checkVersion" == "$tag" ]; then
+      echo "$checkVersion is already in the registry"
+      exit 0
+    fi
+done
+
+./build/docker.sh $1 $2 $3 $4 'latest' $checkVersion
