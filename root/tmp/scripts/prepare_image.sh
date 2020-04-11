@@ -28,7 +28,6 @@ chmod +x /usr/local/bin/ffprobe
 chmod +x /usr/local/bin/ffmpeg
 chmod +x /tmp/scripts/update_transcoder.sh
 chmod +x /usr/lib/plexmediaserver/Plex\ Separate\ Parts\ Transcoder
-chmod +x /usr/lib/plexmediaserver/Plex\ Separate\ Parts\ Transcoder.py
 
 # Update transcoder
 /tmp/scripts/update_transcoder.sh
