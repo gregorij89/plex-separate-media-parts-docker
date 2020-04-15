@@ -32,6 +32,7 @@ buildMergeRequests-PlexSeparatePartsTranscoder:
         expire_in: 1 day 
     only:
         - merge_requests
+        - master
         - schedules
 
 buildMergeRequests-PlexSeparatePartsTranscoder:
