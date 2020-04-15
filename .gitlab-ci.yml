@@ -23,7 +23,6 @@ buildBranches-PlexSeparatePartsTranscoder:
         expire_in: 1 week 
     only:
         - develop
-        - master
 
 buildMergeRequests-PlexSeparatePartsTranscoder:
     <<: *buildDefinition-PlexSeparatePartsTranscoder
@@ -61,6 +60,8 @@ publish:
         - linux
     image: docker:dind
     script:
+        - ls ./
+        - ls ./build
         - ./build/production.sh $DOCKER_HUB $DOCKER_USER $DOCKER_PASSWORD $DOCKER_IMAGE_NAME $CI_COMMIT_REF_NAME
     only:
         - tags
