@@ -23,6 +23,7 @@ buildBranches-PlexSeparatePartsTranscoder:
         expire_in: 1 week 
     only:
         - develop
+        - master
 
 buildMergeRequests-PlexSeparatePartsTranscoder:
     <<: *buildDefinition-PlexSeparatePartsTranscoder
@@ -32,7 +33,6 @@ buildMergeRequests-PlexSeparatePartsTranscoder:
         expire_in: 1 day 
     only:
         - merge_requests
-        - master
 
 buildMergeRequests-PlexSeparatePartsTranscoder:
     <<: *buildDefinition-PlexSeparatePartsTranscoder
