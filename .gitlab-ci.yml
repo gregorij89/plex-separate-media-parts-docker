@@ -33,7 +33,6 @@ buildMergeRequests-PlexSeparatePartsTranscoder:
     only:
         - merge_requests
         - master
-        - schedules
 
 buildMergeRequests-PlexSeparatePartsTranscoder:
     <<: *buildDefinition-PlexSeparatePartsTranscoder
@@ -54,7 +53,7 @@ staging:
     only:
         - develop
 
-publish:
+publishDockerImageOnTag:
     stage: production
     tags:
         - docker
@@ -64,6 +63,21 @@ publish:
         - 'echo "Installing prerequisites ..."'
         - apk add jq bash curl
         - ./build/production.sh $DOCKER_HUB $DOCKER_USER $DOCKER_PASSWORD $DOCKER_IMAGE_NAME $CI_COMMIT_REF_NAME
+    artifacts:
+        paths:
+            - "Plex_Separate_Parts_Transcoder"
     only:
         - tags
-        - schedules
+
+publishDockerImageOnSchedule:
+    stage: production
+    tags:
+        - docker
+        - linux
+    image: docker:dind
+    script:
+        - 'echo "Installing prerequisites ..."'
+        - apk add jq bash curl
+        - if [ "${FROM_SCHEDULE}" = true ]; then ./build/production.sh $DOCKER_HUB $DOCKER_USER $DOCKER_PASSWORD $DOCKER_IMAGE_NAME $CI_COMMIT_REF_NAME; fi
+    only:
+        - master
