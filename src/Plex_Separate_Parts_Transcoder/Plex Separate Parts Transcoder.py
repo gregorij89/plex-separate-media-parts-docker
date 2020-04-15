@@ -9,6 +9,8 @@ from datetime import datetime
 from collections import OrderedDict 
 import uuid
 import subprocess
+import signal
+import ctypes
 
 class Log:
     
@@ -53,6 +55,7 @@ class TranscoderTransformation:
     __sqlConn = None
     __audioMappings = dict()
     __log = Log(str(uuid.uuid4()))
+    __libc = ctypes.CDLL("libc.so.6")
 
     EOI = "END_OF_ITER"
     PLEX_TRANSCODER = os.getenv('PLEX_PATH', "/usr/lib/plexmediaserver") + os.sep + "Plex Transcoder_org"
@@ -235,6 +238,12 @@ class TranscoderTransformation:
         self.__log.Info("Found audio input in file {0} with index {1}".format(_audioPart.path, _audioPart.index))
         return _audioPart
 
+    def setPdeathsig(self, sig = signal.SIGTERM):
+        def callable():
+            self.__log.Info("Transcoder received KILL signal")
+            return self.__libc.prctl(1, sig)
+        return callable
+
     def testIndexesForAudioPart(self, indexes):
         _inputIndex = int(indexes[0])
         _streamIndex = int(indexes[len(indexes)-1])
@@ -284,6 +293,8 @@ class TranscoderTransformation:
                     _stream["-map"] = str(_audioPart.inputPos) + ":" + str(_audioPart.index)
             
             self.__conf.options["-loglevel"] = "warning"
+            if (os.getenv('DEBUG_TRANSCODER', False)):
+                self.__conf.options["-loglevel"] = "verbose"
 
             _final = self.getArgumentsArray()
 
@@ -299,7 +310,7 @@ class TranscoderTransformation:
 
             self.__log.Info("Starting transcoding for session {0}".format(jobId))
 
-            transcoderProc = subprocess.Popen(_final, stderr=subprocess.PIPE , universal_newlines=True)
+            transcoderProc = subprocess.Popen(_final, stderr=subprocess.PIPE , universal_newlines=True, preexec_fn = self.setPdeathsig(signal.SIGKILL))
             while True:
                 error = transcoderProc.stderr.readline()
                 if error == '' and transcoderProc.poll() is not None:

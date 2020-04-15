@@ -5,7 +5,7 @@ if [[ "$UID" -ne "0" ]]; then
 fi
 
 PT='/usr/lib/plexmediaserver/Plex Transcoder'
-PCAT='/usr/lib/plexmediaserver/Plex Separate Parts Transcoder'
+PCAT='/usr/lib/plexseparatepartstranscoder/Plex Separate Parts Transcoder'
 
 if [[ -f "$PT" ]] && [[ ! -h "$PT" ]]; then
     mv -v "$PT" "${PT}_org"

@@ -1,6 +1,47 @@
 stages:
+    - build
     - staging
     - production
+
+.buildTemplate-PlexSeparatePartsTranscoder: &buildDefinition-PlexSeparatePartsTranscoder
+    stage: build
+    tags:
+        - linux
+    image: python:3.7-stretch
+    script:
+        - 'echo "Installing prerequisities ..."'
+        - 'pip install nuitka'
+        - 'echo "Building Plex Separate Parts Transcoder ..."'
+        - 'python -m nuitka --standalone "./src/Plex_Separate_Parts_Transcoder/Plex Separate Parts Transcoder.py"'
+        - 'mv ./Plex\ Separate\ Parts\ Transcoder.dist ./Plex_Separate_Parts_Transcoder'
+
+buildBranches-PlexSeparatePartsTranscoder:
+    <<: *buildDefinition-PlexSeparatePartsTranscoder
+    artifacts:
+        paths:
+            - "Plex_Separate_Parts_Transcoder"
+        expire_in: 1 week 
+    only:
+        - develop
+        - master
+
+buildMergeRequests-PlexSeparatePartsTranscoder:
+    <<: *buildDefinition-PlexSeparatePartsTranscoder
+    artifacts:
+        paths:
+            - "Plex_Separate_Parts_Transcoder"
+        expire_in: 1 day 
+    only:
+        - merge_requests
+        - schedules
+
+buildMergeRequests-PlexSeparatePartsTranscoder:
+    <<: *buildDefinition-PlexSeparatePartsTranscoder
+    artifacts:
+        paths:
+            - "Plex_Separate_Parts_Transcoder"
+    only:
+        - tags
 
 staging:
     stage: staging
@@ -11,7 +52,7 @@ staging:
     script:
         - ./build/docker.sh $DOCKER_HUB $DOCKER_USER $DOCKER_PASSWORD $DOCKER_IMAGE_NAME 'dev' $CI_COMMIT_SHORT_SHA
     only:
-        - master
+        - develop
 
 publish:
     stage: production
@@ -22,4 +63,5 @@ publish:
     script:
         - ./build/production.sh $DOCKER_HUB $DOCKER_USER $DOCKER_PASSWORD $DOCKER_IMAGE_NAME $CI_COMMIT_REF_NAME
     only:
-     - tags
+        - tags
+        - schedules

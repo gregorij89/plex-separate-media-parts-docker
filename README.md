@@ -31,7 +31,7 @@ When you want to play the movie, Plex needs to know, that it has to mux audio an
 
 ## PlexContainer
 
-Container is responsible for proper handling of sided audio when playback is requested. The core of this functionality is in the `Plex Separate Parts Transcoder` script, that is located in `/root/usr/lib/plexmediaserver` folder.
+Container is responsible for proper handling of sided audio when playback is requested. The core of this functionality is in the `Plex Separate Parts Transcoder` script, that is located in `/src/Plex_Separate_Parts_Transcoder/Pex Separate Parts Transcoder.py` folder.
 
 Because I am using my personal private docker registry, all scripts here are optimized to handle that. That is also true for the configured CI/CD pipeline (.gitlab-ci.yml file). If you want to build this image, you have to alter the scripts in `/build` folder, or build the docker file manually.
 
