@@ -12,14 +12,14 @@ stages:
         - 'echo "Installing prerequisities ..."'
         - 'pip install nuitka'
         - 'echo "Building Plex Separate Parts Transcoder ..."'
-        - 'python -m nuitka --standalone "./src/Plex Separate Parts Transcoder/Plex Separate Parts Transcoder.py"'
-        - 'mv ./Plex\ Separate\ Parts\ Transcoder.dist ./Plex\ Separate\ Parts\ Transcoder'
+        - 'python -m nuitka --standalone "./src/Plex_Separate_Parts_Transcoder/Plex Separate Parts Transcoder.py"'
+        - 'mv ./Plex\ Separate\ Parts\ Transcoder.dist ./Plex_Separate_Parts_Transcoder'
 
 buildBranches-PlexSeparatePartsTranscoder:
     <<: *buildDefinition-PlexSeparatePartsTranscoder
     artifacts:
         paths:
-            - "Plex Separate Parts Transcoder"
+            - "Plex_Separate_Parts_Transcoder"
         expire_in: 1 week 
     only:
         - develop
@@ -29,7 +29,7 @@ buildMergeRequests-PlexSeparatePartsTranscoder:
     <<: *buildDefinition-PlexSeparatePartsTranscoder
     artifacts:
         paths:
-            - "Plex Separate Parts Transcoder"
+            - "Plex_Separate_Parts_Transcoder"
         expire_in: 1 day 
     only:
         - merge_requests
@@ -39,7 +39,7 @@ buildMergeRequests-PlexSeparatePartsTranscoder:
     <<: *buildDefinition-PlexSeparatePartsTranscoder
     artifacts:
         paths:
-            - "Plex Separate Parts Transcoder"
+            - "Plex_Separate_Parts_Transcoder"
     only:
         - tags
 
