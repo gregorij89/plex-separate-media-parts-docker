@@ -9,7 +9,7 @@ stages:
         - linux
     image: python:3.7-stretch
     script:
-        - 'echo "Installing prerequisities ..."'
+        - 'echo "Installing prerequisites ..."'
         - 'pip install nuitka'
         - 'echo "Building Plex Separate Parts Transcoder ..."'
         - 'python -m nuitka --standalone "./src/Plex_Separate_Parts_Transcoder/Plex Separate Parts Transcoder.py"'
@@ -60,8 +60,8 @@ publish:
         - linux
     image: docker:dind
     script:
-        - ls ./
-        - ls ./build
+        - 'echo "Installing prerequisites ..."'
+        - apk add jq bash curl
         - ./build/production.sh $DOCKER_HUB $DOCKER_USER $DOCKER_PASSWORD $DOCKER_IMAGE_NAME $CI_COMMIT_REF_NAME
     only:
         - tags
