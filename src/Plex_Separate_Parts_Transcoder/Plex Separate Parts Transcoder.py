@@ -16,6 +16,25 @@ class Log:
     
     def __init__(self, jobId):
         self._jobId = jobId
+        self._logFile = os.path.join(os.getenv('PLEX_LIBRARY_PATH', "/config/Library"),"Application Support/Plex Media Server/Logs/Plex Transcoder.log")
+        
+        logSize = os.path.getsize(self._logFile)
+        if (logSize > 10485772):
+            try:
+                logFileNameCore = self._logFile[:3]
+
+                for i in range (5,0,-1):
+                    currentLogFile = logFileNameCore + str(i) + ".log"
+                    if not os.path.isfile(currentLogFile):
+                        continue
+                    if i == 5:
+                        os.remove(currentLogFile)
+                        continue
+                    os.rename(currentLogFile,logFileNameCore + str(i+1) + "log")
+                
+                os.rename(self._logFile,logFileNameCore + "1.log")
+            except:
+                self.Warn("Couldn't rotate logs. Try on next run")
     
     def __getTime(self):
         return datetime.now().strftime("%b %d, %Y %H:%M:%S.%f")[:-3]
@@ -24,7 +43,7 @@ class Log:
         if (os.getenv('TRANSCODER_LOGTOCONSOLE', False)):
             print (message)
         else:
-            with open(os.path.join(os.getenv('PLEX_LIBRARY_PATH', "/config/Library"),"Application Support/Plex Media Server/Logs/Plex Transcoder.log"), 'a') as file:
+            with open(self._logFile, 'a') as file:
                 file.write(message + "\n")
     
     def Message(self,message,severity,jobid = None):
