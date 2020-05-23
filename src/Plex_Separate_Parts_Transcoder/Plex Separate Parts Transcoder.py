@@ -16,25 +16,26 @@ class Log:
     
     def __init__(self, jobId):
         self._jobId = jobId
-        self._logFile = os.path.join(os.getenv('PLEX_LIBRARY_PATH', "/config/Library"),"Application Support/Plex Media Server/Logs/Plex Transcoder.log")
+        self._logFile = os.path.join(os.getenv('PLEX_LIBRARY_PATH', "/config/Library"),"Application Support", "Plex Media Server","Logs","Plex Transcoder.log")
         
-        logSize = os.path.getsize(self._logFile)
-        if (logSize > 10485772):
-            try:
-                logFileNameCore = self._logFile[:3]
+        if os.path.isfile(self._logFile):
+            logSize = os.path.getsize(self._logFile)
+            if (logSize > 10485772):
+                try:
+                    logFileNameCore = self._logFile[:3]
 
-                for i in range (5,0,-1):
-                    currentLogFile = logFileNameCore + str(i) + ".log"
-                    if not os.path.isfile(currentLogFile):
-                        continue
-                    if i == 5:
-                        os.remove(currentLogFile)
-                        continue
-                    os.rename(currentLogFile,logFileNameCore + str(i+1) + "log")
-                
-                os.rename(self._logFile,logFileNameCore + "1.log")
-            except:
-                self.Warn("Couldn't rotate logs. Try on next run")
+                    for i in range (5,0,-1):
+                        currentLogFile = logFileNameCore + str(i) + ".log"
+                        if not os.path.isfile(currentLogFile):
+                            continue
+                        if i == 5:
+                            os.remove(currentLogFile)
+                            continue
+                        os.rename(currentLogFile,logFileNameCore + str(i+1) + "log")
+                    
+                    os.rename(self._logFile,logFileNameCore + "1.log")
+                except:
+                    self.Warn("Couldn't rotate logs. Try on next run")
     
     def __getTime(self):
         return datetime.now().strftime("%b %d, %Y %H:%M:%S.%f")[:-3]
@@ -78,7 +79,7 @@ class TranscoderTransformation:
 
     EOI = "END_OF_ITER"
     PLEX_TRANSCODER = os.getenv('PLEX_PATH', "/usr/lib/plexmediaserver") + os.sep + "Plex Transcoder_org"
-    PLEX_DATABASE_PATH = os.getenv('PLEX_LIBRARY_PATH', "/config/Library") + "/Application Support/Plex Media Server/Plug-in Support/Databases/com.plexapp.plugins.library.db"
+    PLEX_DATABASE_PATH = os.path.join(os.getenv('PLEX_LIBRARY_PATH', "/config/Library") + "Application Support","Plex Media Server","Plug-in Support","Databases","com.plexapp.plugins.library.db")
 
     def addAudioPartToInputs(self, audioPart):
         self.__conf.inputs.append(OrderedDict())
@@ -265,7 +266,10 @@ class TranscoderTransformation:
 
     def testIndexesForAudioPart(self, indexes):
         _inputIndex = int(indexes[0])
-        _streamIndex = int(indexes[len(indexes)-1])
+        _streamIndexStr = indexes[len(indexes)-1]
+        if (_streamIndexStr[0] == "#"):
+            _streamIndexStr = _streamIndexStr[1:]
+        _streamIndex = int(_streamIndexStr, 0)
         
         if _streamIndex < 1000: 
             #lower stream index than 1000 means no alteration by separate audio agent
