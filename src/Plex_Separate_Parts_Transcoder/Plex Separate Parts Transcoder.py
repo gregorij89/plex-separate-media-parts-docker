@@ -79,7 +79,7 @@ class TranscoderTransformation:
 
     EOI = "END_OF_ITER"
     PLEX_TRANSCODER = os.getenv('PLEX_PATH', "/usr/lib/plexmediaserver") + os.sep + "Plex Transcoder_org"
-    PLEX_DATABASE_PATH = os.path.join(os.getenv('PLEX_LIBRARY_PATH', "/config/Library") + "Application Support","Plex Media Server","Plug-in Support","Databases","com.plexapp.plugins.library.db")
+    PLEX_DATABASE_PATH = os.path.join(os.getenv('PLEX_LIBRARY_PATH', "/config/Library"), "Application Support","Plex Media Server","Plug-in Support","Databases","com.plexapp.plugins.library.db")
 
     def addAudioPartToInputs(self, audioPart):
         self.__conf.inputs.append(OrderedDict())
