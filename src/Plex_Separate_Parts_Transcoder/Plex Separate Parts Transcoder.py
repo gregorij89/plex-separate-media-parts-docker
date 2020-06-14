@@ -196,7 +196,7 @@ class TranscoderTransformation:
                 continue
 
             #TODO: Find better way how to recognize options part of the commands sequence. This is depandent on the way, how current version of PMS is providing arguments.
-            if arg == "-start_at_zero":
+            if arg in ["-start_at_zero", "-y", "-nostats", "-loglevel"]:
                 curr_section = self.__conf.options
                 continue
 
