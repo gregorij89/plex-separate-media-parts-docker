@@ -292,9 +292,12 @@ class TranscoderTransformation:
             self.parseArgumets()
             
             #Extract jobId
-            jobId = self.__conf.options["-progressurl"].split('/')[7]
-            if (jobId is not None): self.__log = Log(jobId)
-            self.__log.Info("Preparing transcoding for session {0}".format(jobId))
+            try:
+                jobId = self.__conf.options["-progressurl"].split('/')[7]
+                if (jobId is not None): self.__log = Log(jobId)
+                self.__log.Info("Preparing transcoding for session {0}".format(jobId))
+            except Exception as e:
+                self.__log.Warn("Couldn´t parse job id.")
 
             
             #Check if requested media has separate audio
