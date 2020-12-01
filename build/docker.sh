@@ -16,3 +16,6 @@ docker build -f "./Dockerfile" --force-rm -t $1/$4:$5 -t $1/$4:$6 --target final
 
 echo "Pushing image to registry '$1' ..."
 docker push $1/$4
+
+echo "Removing images from docker host ..."
+docker rmi $1/$4:$5 $1/$4:$6 "plexinc/pms-docker:latest"
