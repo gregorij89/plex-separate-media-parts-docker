@@ -304,7 +304,7 @@ class TranscoderTransformation:
             self.__log.debug(argString)
             self.closeDatabase()
             
-            os.environ["LD_LIBRARY_PATH_ORG"] = os.environ["LD_LIBRARY_PATH"]
+            os.environ["LD_LIBRARY_PATH_ORG"] = os.getenv('LD_LIBRARY_PATH', "/usr/lib/plexmediaserver")
 
             self.__log.info("Starting transcoding for session {0}".format(jobId))
 
